@@ -81,9 +81,11 @@
 */
 import React, { useState,useEffect } from "react";
 import "./Scoreboard.css";
-import {API_URL} from './const.js';
+//import {API_URL} from './const.js';
 
-  const Scoreboard = ({ gameData }) => {
+const API_URL = "http://127.0.0.1:52022"
+
+  const Scoreboard = ({ gameData, setGameData, setRandomSize,setClicked}) => {
     const [scoreboard, setScoreboard] = useState(gameData.game.Players);
     const [currentPlayer, setCurrentPlayer] = useState(gameData.game.CurrentPlayer);
     const [roundsLeft, setRoundsLeft] = useState(gameData.game.RoundsLeft);
@@ -93,6 +95,7 @@ import {API_URL} from './const.js';
     console.log(scoreboard.Score)
 
     useEffect(() => {
+      setGameData(gameData);
       setScoreboard(gameData.game.Players);
       setCurrentPlayer(gameData.game.CurrentPlayer);
       setRoundsLeft(gameData.game.RoundsLeft);
@@ -113,7 +116,8 @@ import {API_URL} from './const.js';
 
         const data = await response.json();
         console.log(data);
-
+        setGameData(data);
+        setRandomSize(data.game.Dice);
         const newScoreboard = data.game.Players;
         setScoreboard(newScoreboard);
 
@@ -127,10 +131,15 @@ import {API_URL} from './const.js';
         setScoreCalculator(newScoreCalculator);
         const newUuid = data.game.Uuid;
         setUuid(newUuid);
+        resetClicked();
       } catch (error) {
         console.error(error);
       }
     };
+
+    const resetClicked = () => {
+      setClicked([0, 0, 0, 0, 0]);
+    }
 
     const handleCellClick = (category) => {
       const currentPlayerScore = scoreboard[currentPlayer].Score[category];
@@ -173,7 +182,10 @@ import {API_URL} from './const.js';
                             : "scoreboard-cell-empty"
                           : "scoreboard-cell"
                       }
-                      onClick={() => handleCellClick(key)}
+                      onClick={
+                        (key === "Bonus" || key === "Total") ? null :
+                        (currentPlayer === index ? () => handleCellClick(key) : null)
+                      }
                     >
                       {player.Score[key] !== -1 ? (
                         player.Score[key]

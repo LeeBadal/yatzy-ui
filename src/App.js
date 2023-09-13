@@ -1,9 +1,13 @@
-import React, { useState} from "react";
+import React, { useState,useEffect} from "react";
 import { motion } from "framer-motion";
 import "./App.css";
 import Scoreboard from './Scoreboard';
 //import gameData from const.js
-import {sgameData, API_URL} from './const.js';
+//import {sgameData, API_URL} from './const.js';
+import { sgameData } from "./const.js";
+
+
+const API_URL = "http://127.0.0.1:52022"
 
 // Animation properties for the container
 // which is the face of the die
@@ -77,7 +81,7 @@ const App = () => {
   const [randomSize, setRandomSize] = useState([6, 6, 6, 6, 6]);
   const [clicked, setClicked] = useState([0, 0, 0, 0, 0]);
   const [gameStarted, setGameStarted] = useState(false);
-  const [gameData, setGameData] = useState(sgameData.sgameData); // add state variable to hold game data
+  const [gameData, setGameData] = useState(sgameData); // add state variable to hold game data
 
   console.log(gameData)
   console.log(`${API_URL}/create-game`)
@@ -122,11 +126,23 @@ const App = () => {
     }
   };
 
+  useEffect(() => {
+    // Check if gameData is not null before updating the game state
+    if (gameData !== null) {
+      // Update the game state here
+      console.log("Game state updated:", gameData);
+    }
+  }, [gameData]);
+
+  const handleGameDataUpdate = (newGameData) => {
+    setGameData(newGameData);
+  };
+
   return (
     <div className="container"> {/* add the container class */}
     <div className="scoreboard"> {/* add the scoreboard class */}
       {/* Pass game data state variable as a prop to Scoreboard component */}
-      <Scoreboard gameData={gameData} />
+      <Scoreboard gameData={gameData} setGameData={handleGameDataUpdate} setRandomSize={setRandomSize} setClicked={setClicked}/>
     </div>
     <div className="dice"> {/* add the dice class */}
       <div className="dice-container">
