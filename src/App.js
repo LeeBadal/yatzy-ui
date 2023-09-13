@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import { motion } from "framer-motion";
 import "./App.css";
+import Scoreboard from './Scoreboard';
+//import gameData from const.js
+import {sgameData, API_URL} from './const.js';
 
 // Animation properties for the container
 // which is the face of the die
@@ -69,14 +72,18 @@ const Die = ({ randomSize, index, clicked, setClicked }) => {
   );
 };
 
+
 const App = () => {
   const [randomSize, setRandomSize] = useState([6, 6, 6, 6, 6]);
   const [clicked, setClicked] = useState([0, 0, 0, 0, 0]);
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameData, setGameData] = useState(sgameData.sgameData); // add state variable to hold game data
 
+  console.log(gameData)
+  console.log(`${API_URL}/create-game`)
   const handleStartGame = async () => {
     try {
-      const response = await fetch("http://localhost:8080/create-game", {
+      const response = await fetch(`${API_URL}/create-game`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,11 +92,10 @@ const App = () => {
       });
       const data = await response.json();
       console.log(data);
-      //extract dice roll from data
-      
       
       const newRandomSize = data.game.Dice
       setRandomSize(newRandomSize);
+      setGameData(data); // update game data state variable
       setGameStarted(true);
     } catch (error) {
       console.error(error);
@@ -98,7 +104,7 @@ const App = () => {
 
   const handleRoll = async () => {
     try {
-      const response = await fetch("http://localhost:8080/next-turn", {
+      const response = await fetch(`${API_URL}/next-turn`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,30 +113,48 @@ const App = () => {
       });
       const data = await response.json();
       console.log(data);
-      //extract dice roll from data
-      
       
       const newRandomSize = data.game.Dice
       setRandomSize(newRandomSize);
+      setGameData(data); // update game data state variable
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div className="dice-container">
-      <Die randomSize={randomSize[0]} setRandomSize={setRandomSize} index={0} clicked={clicked} setClicked={setClicked} />
-      <Die randomSize={randomSize[1]} setRandomSize={setRandomSize} index={1} clicked={clicked} setClicked={setClicked} />
-      <Die randomSize={randomSize[2]} setRandomSize={setRandomSize} index={2} clicked={clicked} setClicked={setClicked} />
-      <Die randomSize={randomSize[3]} setRandomSize={setRandomSize} index={3} clicked={clicked} setClicked={setClicked} />
-      <Die randomSize={randomSize[4]} setRandomSize={setRandomSize} index={4} clicked={clicked} setClicked={setClicked} />
-      {gameStarted ? (
-        <button onClick={handleRoll}>ROLL</button>
-      ) : (
-        <button onClick={handleStartGame}>Start game</button>
-      )}
+    <div className="container"> {/* add the container class */}
+    <div className="scoreboard"> {/* add the scoreboard class */}
+      {/* Pass game data state variable as a prop to Scoreboard component */}
+      <Scoreboard gameData={gameData} />
     </div>
-  );
+    <div className="dice"> {/* add the dice class */}
+      <div className="dice-container">
+        <Die randomSize={randomSize[0]} setRandomSize={setRandomSize} index={0} clicked={clicked} setClicked={setClicked} />
+        <div className="margin"></div>
+        <Die randomSize={randomSize[1]} setRandomSize={setRandomSize} index={1} clicked={clicked} setClicked={setClicked} />
+        <div className="margin"></div>
+        <Die randomSize={randomSize[2]} setRandomSize={setRandomSize} index={2} clicked={clicked} setClicked={setClicked} />
+        <div className="margin"></div>
+        <Die randomSize={randomSize[3]} setRandomSize={setRandomSize} index={3} clicked={clicked} setClicked={setClicked} />
+        <div className="margin"></div>
+        <Die randomSize={randomSize[4]} setRandomSize={setRandomSize} index={4} clicked={clicked} setClicked={setClicked} />
+        {gameStarted ? (
+          gameData.game.RollsLeft === 0 ? (
+            <button className="yellow-button">Submit a category</button>
+          ) : (
+            <button onClick={handleRoll}>ROLL</button>
+          )
+        ) : (
+          <button onClick={handleStartGame}>Start game</button>
+        )}
+      </div>
+    </div>
+  </div>
+);
 };
 
+
 export default App;
+
+
