@@ -83,7 +83,7 @@ import React, { useState,useEffect } from "react";
 import "./Scoreboard.css";
 //import {API_URL} from './const.js';
 
-const API_URL = "http://127.0.0.1:52022"
+const API_URL = "http://127.0.0.1:58958"
 
   const Scoreboard = ({ gameData, setGameData, setRandomSize,setClicked}) => {
     const [scoreboard, setScoreboard] = useState(gameData.game.Players);
@@ -111,7 +111,8 @@ const API_URL = "http://127.0.0.1:52022"
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ choice: category }),
+          body: JSON.stringify({ choice: category,
+                                  uuid: uuid }),
         });
 
         const data = await response.json();

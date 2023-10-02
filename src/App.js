@@ -7,7 +7,7 @@ import Scoreboard from './Scoreboard';
 import { sgameData } from "./const.js";
 
 
-const API_URL = "http://127.0.0.1:52022"
+const API_URL = "http://127.0.0.1:58958"
 
 // Animation properties for the container
 // which is the face of the die
@@ -82,7 +82,8 @@ const App = () => {
   const [clicked, setClicked] = useState([0, 0, 0, 0, 0]);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameData, setGameData] = useState(sgameData); // add state variable to hold game data
-
+  const [uuid, setUuid] = useState(null); // add state variable to hold UUID
+  
   console.log(gameData)
   console.log(`${API_URL}/create-game`)
   const handleStartGame = async () => {
@@ -96,24 +97,29 @@ const App = () => {
       });
       const data = await response.json();
       console.log(data);
-      
+  
       const newRandomSize = data.game.Dice
       setRandomSize(newRandomSize);
       setGameData(data); // update game data state variable
+      setUuid(data.game.Uuid); // update UUID state variable
       setGameStarted(true);
+      console.log(uuid)
     } catch (error) {
       console.error(error);
     }
   };
 
   const handleRoll = async () => {
+    console.log(uuid)
     try {
       const response = await fetch(`${API_URL}/next-turn`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ keep: clicked}),
+        body: JSON.stringify({ keep: clicked,
+                                uuid: uuid // use UUID state variable
+                    }),
       });
       const data = await response.json();
       console.log(data);
@@ -121,6 +127,7 @@ const App = () => {
       const newRandomSize = data.game.Dice
       setRandomSize(newRandomSize);
       setGameData(data); // update game data state variable
+      setUuid(data.game.Uuid); // update UUID state variable
     } catch (error) {
       console.error(error);
     }
