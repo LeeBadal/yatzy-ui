@@ -8,6 +8,7 @@ import { sgameData } from "./const.js";
 
 
 const API_URL = "http://127.0.0.1:58958"
+//const API_URL = "http://127.0.0.1:8080"
 
 // Animation properties for the container
 // which is the face of the die
@@ -151,6 +152,7 @@ const App = () => {
       {/* Pass game data state variable as a prop to Scoreboard component */}
       <Scoreboard gameData={gameData} setGameData={handleGameDataUpdate} setRandomSize={setRandomSize} setClicked={setClicked}/>
     </div>
+    
     <div className="dice"> {/* add the dice class */}
       <div className="dice-container">
         <Die randomSize={randomSize[0]} setRandomSize={setRandomSize} index={0} clicked={clicked} setClicked={setClicked} />

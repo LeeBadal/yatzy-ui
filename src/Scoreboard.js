@@ -79,137 +79,164 @@
 }
 
 */
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./Scoreboard.css";
-//import {API_URL} from './const.js';
 
 const API_URL = "http://127.0.0.1:58958"
-const orderedKeys = ["Ones", "Twos", "Threes", "Fours", "Fives", "Sixes", "Bonus", "OnePair", "TwoPairs", "ThreeOfAKind", "FourOfAKind", "SmallStraight", "LargeStraight", "FullHouse", "Chance", "Yatzy"];
+//const API_URL = "http://127.0.0.1:8080"
+const orderedKeys = [
+  "Ones",
+  "Twos",
+  "Threes",
+  "Fours",
+  "Fives",
+  "Sixes",
+  "Bonus",
+  "OnePair",
+  "TwoPairs",
+  "ThreeOfAKind",
+  "FourOfAKind",
+  "SmallStraight",
+  "LargeStraight",
+  "FullHouse",
+  "Chance",
+  "Yatzy",
+];
 
-  const Scoreboard = ({ gameData, setGameData, setRandomSize,setClicked}) => {
-    const [scoreboard, setScoreboard] = useState(gameData.game.Players);
-    const [currentPlayer, setCurrentPlayer] = useState(gameData.game.CurrentPlayer);
-    const [roundsLeft, setRoundsLeft] = useState(gameData.game.RoundsLeft);
-    const [categoryChoice, setCategoryChoice] = useState(gameData.game.CategoryChoice);
-    const [scoreCalculator, setScoreCalculator] = useState(gameData.game.ScoreCalculator);
-    const [uuid, setUuid] = useState(gameData.game.Uuid);
-    console.log(scoreboard.Score)
+const Scoreboard = ({
+  gameData,
+  setGameData,
+  setRandomSize,
+  setClicked,
+}) => {
+  const [scoreboard, setScoreboard] = useState(gameData.game.Players);
+  const [currentPlayer, setCurrentPlayer] = useState(gameData.game.CurrentPlayer);
+  const [roundsLeft, setRoundsLeft] = useState(gameData.game.RoundsLeft);
+  const [categoryChoice, setCategoryChoice] = useState(gameData.game.CategoryChoice);
+  const [scoreCalculator, setScoreCalculator] = useState(gameData.game.ScoreCalculator);
+  const [uuid, setUuid] = useState(gameData.game.Uuid);
+  console.log(scoreboard.Score);
 
-    useEffect(() => {
-      setGameData(gameData);
-      setScoreboard(gameData.game.Players);
-      setCurrentPlayer(gameData.game.CurrentPlayer);
-      setRoundsLeft(gameData.game.RoundsLeft);
-      setCategoryChoice(gameData.game.CategoryChoice);
-      setScoreCalculator(gameData.game.ScoreCalculator);
-      setUuid(gameData.game.Uuid);
-    }, [gameData]);
+  useEffect(() => {
+    setGameData(gameData);
+    setScoreboard(gameData.game.Players);
+    setCurrentPlayer(gameData.game.CurrentPlayer);
+    setRoundsLeft(gameData.game.RoundsLeft);
+    setCategoryChoice(gameData.game.CategoryChoice);
+    setScoreCalculator(gameData.game.ScoreCalculator);
+    setUuid(gameData.game.Uuid);
+  }, [gameData]);
 
-    const handleScoreboard = async (category) => {
-      try {
-        const response = await fetch(`${API_URL}/submit-choice`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ choice: category,
-                                  uuid: uuid }),
-        });
+  const handleScoreboard = async (category) => {
+    try {
+      const response = await fetch(`${API_URL}/submit-choice`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ choice: category, uuid: uuid }),
+      });
 
-        const data = await response.json();
-        if (data.error) {
-          alert(data.error);
-          return;
-        }
-        console.log(data);
-        setGameData(data);
-        setRandomSize(data.game.Dice);
-        const newScoreboard = data.game.Players;
-        setScoreboard(newScoreboard);
-
-        const newCurrentPlayer = data.game.CurrentPlayer;
-        setCurrentPlayer(newCurrentPlayer);
-        const newRoundsLeft = data.game.RoundsLeft;
-        setRoundsLeft(newRoundsLeft);
-        const newCategoryChoice = data.game.CategoryChoice;
-        setCategoryChoice(newCategoryChoice);
-        const newScoreCalculator = data.game.ScoreCalculator;
-        setScoreCalculator(newScoreCalculator);
-        const newUuid = data.game.Uuid;
-        setUuid(newUuid);
-        resetClicked();
-      } catch (error) {
-        console.error(error);
+      const data = await response.json();
+      if (data.error) {
+        alert(data.error);
+        return;
       }
-    };
+      console.log(data);
+      setGameData(data);
+      setRandomSize(data.game.Dice);
+      const newScoreboard = data.game.Players;
+      setScoreboard(newScoreboard);
 
-    const resetClicked = () => {
-      setClicked([0, 0, 0, 0, 0]);
+      const newCurrentPlayer = data.game.CurrentPlayer;
+      setCurrentPlayer(newCurrentPlayer);
+      const newRoundsLeft = data.game.RoundsLeft;
+      setRoundsLeft(newRoundsLeft);
+      const newCategoryChoice = data.game.CategoryChoice;
+      setCategoryChoice(newCategoryChoice);
+      const newScoreCalculator = data.game.ScoreCalculator;
+      setScoreCalculator(newScoreCalculator);
+      const newUuid = data.game.Uuid;
+      setUuid(newUuid);
+      resetClicked();
+    } catch (error) {
+      console.error(error);
     }
+  };
 
-    const handleCellClick = (category) => {
-      const currentPlayerScore = scoreboard[currentPlayer].Score[category];
-      if (currentPlayerScore === -1) {
-        handleScoreboard(category);
-      }
-    };
+  const resetClicked = () => {
+    setClicked([0, 0, 0, 0, 0]);
+  };
 
-    return (
-      <>
-        <div>
-          <h1>Scoreboard</h1>
+  const handleCellClick = (category) => {
+    const currentPlayerScore = scoreboard[currentPlayer].Score[category];
+    if (currentPlayerScore === -1) {
+      handleScoreboard(category);
+    }
+  };
 
-          {/* Scoreboard*/}
-          <table className="scoreboard-table">
-            <thead>
-              <tr>
-                <th className="scoreboard-category-column">Category</th>
-                {scoreboard.map((player, index) => (
+  return (
+    <>
+      <div>
+        <h1>Scoreboard</h1>
+
+        {/* Scoreboard*/}
+        <table className="scoreboard-table">
+          <thead>
+            <tr>
+              <th className="scoreboard-category-column">Category</th>
+              {scoreboard.map((player, index) => {
+                const totalScore = currentPlayer === index ? scoreCalculator["Total"] : player.Score["Total"];
+                return (
                   <th
                     key={index}
                     className={currentPlayer === index ? "current-player" : ""}
                   >
-                    Player {index + 1}
+                    Player {index + 1} ({totalScore})
                   </th>
+                );
+              })}
+            </tr>
+          </thead>
+
+          <tbody>
+            {orderedKeys.map((key) => (
+              <tr key={key}>
+                <td className="scoreboard-cell">{key}</td>
+                {scoreboard.map((player, index) => (
+                  <td
+                    key={index}
+                    className={
+                      player.Score[key] === -1
+                        ? currentPlayer === index && scoreCalculator[key] > 0
+                          ? "scoreboard-cell-above-zero"
+                          : "scoreboard-cell-empty"
+                        : "scoreboard-cell"
+                    }
+                    onClick={
+                      key === "Bonus" || key === "Total"
+                        ? null
+                        : currentPlayer === index
+                        ? () => handleCellClick(key)
+                        : null
+                    }
+                  >
+                    {player.Score[key] !== -1 ? (
+                      player.Score[key]
+                    ) : currentPlayer === index ? (
+                      <strong>{scoreCalculator[key]}</strong>
+                    ) : (
+                      ""
+                    )}
+                  </td>
                 ))}
               </tr>
-            </thead>
-      
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+};
 
-            <tbody>
-              {orderedKeys.map((key) => (
-                <tr key={key}>
-                  <td className="scoreboard-cell">{key}</td>
-                  {scoreboard.map((player, index) => (
-                    <td
-                      key={index}
-                      className={
-                        player.Score[key] === -1
-                          ? currentPlayer === index && scoreCalculator[key] > 0
-                            ? "scoreboard-cell-above-zero"
-                            : "scoreboard-cell-empty"
-                          : "scoreboard-cell"
-                      }
-                      onClick={
-                        (key === "Bonus" || key === "Total") ? null :
-                        (currentPlayer === index ? () => handleCellClick(key) : null)
-                      }
-                    >
-                      {player.Score[key] !== -1 ? (
-                        player.Score[key]
-                      ) : currentPlayer === index ? (
-                        <strong>{scoreCalculator[key]}</strong>
-                      ) : (
-                        ""
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </>
-    );
-                      };
 export default Scoreboard;

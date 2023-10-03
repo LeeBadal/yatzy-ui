@@ -1,6 +1,8 @@
 # Yatzlee
+Spaghetti code frontend for a Yatzlee game.
 
-Yatzlee
+## Screenshot
+![Screenshot](./static/yatzlee.PNG)
 
 ## Available Scripts
 
