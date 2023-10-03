@@ -111,8 +111,8 @@ const Scoreboard = ({
 }) => {
   const [scoreboard, setScoreboard] = useState(gameData.game.Players);
   const [currentPlayer, setCurrentPlayer] = useState(gameData.game.CurrentPlayer);
-  const [roundsLeft, setRoundsLeft] = useState(gameData.game.RoundsLeft);
-  const [categoryChoice, setCategoryChoice] = useState(gameData.game.CategoryChoice);
+  const [, setRoundsLeft] = useState(gameData.game.RoundsLeft);
+  const [, setCategoryChoice] = useState(gameData.game.CategoryChoice);
   const [scoreCalculator, setScoreCalculator] = useState(gameData.game.ScoreCalculator);
   const [uuid, setUuid] = useState(gameData.game.Uuid);
   console.log(scoreboard.Score);
@@ -125,7 +125,7 @@ const Scoreboard = ({
     setCategoryChoice(gameData.game.CategoryChoice);
     setScoreCalculator(gameData.game.ScoreCalculator);
     setUuid(gameData.game.Uuid);
-  }, [gameData]);
+  }, [gameData,setGameData]);
 
   const handleScoreboard = async (category) => {
     try {
