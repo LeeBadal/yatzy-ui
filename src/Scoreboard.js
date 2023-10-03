@@ -84,6 +84,7 @@ import "./Scoreboard.css";
 //import {API_URL} from './const.js';
 
 const API_URL = "http://127.0.0.1:58958"
+const orderedKeys = ["Ones", "Twos", "Threes", "Fours", "Fives", "Sixes", "Bonus", "OnePair", "TwoPairs", "ThreeOfAKind", "FourOfAKind", "SmallStraight", "LargeStraight", "FullHouse", "Chance", "Yatzy"];
 
   const Scoreboard = ({ gameData, setGameData, setRandomSize,setClicked}) => {
     const [scoreboard, setScoreboard] = useState(gameData.game.Players);
@@ -116,6 +117,10 @@ const API_URL = "http://127.0.0.1:58958"
         });
 
         const data = await response.json();
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
         console.log(data);
         setGameData(data);
         setRandomSize(data.game.Dice);
@@ -169,8 +174,10 @@ const API_URL = "http://127.0.0.1:58958"
                 ))}
               </tr>
             </thead>
+      
+
             <tbody>
-              {Object.entries(scoreCalculator).map(([key, value]) => (
+              {orderedKeys.map((key) => (
                 <tr key={key}>
                   <td className="scoreboard-cell">{key}</td>
                   {scoreboard.map((player, index) => (
@@ -178,7 +185,7 @@ const API_URL = "http://127.0.0.1:58958"
                       key={index}
                       className={
                         player.Score[key] === -1
-                          ? currentPlayer === index && value > 0
+                          ? currentPlayer === index && scoreCalculator[key] > 0
                             ? "scoreboard-cell-above-zero"
                             : "scoreboard-cell-empty"
                           : "scoreboard-cell"
@@ -191,7 +198,7 @@ const API_URL = "http://127.0.0.1:58958"
                       {player.Score[key] !== -1 ? (
                         player.Score[key]
                       ) : currentPlayer === index ? (
-                        <strong>{value}</strong>
+                        <strong>{scoreCalculator[key]}</strong>
                       ) : (
                         ""
                       )}
