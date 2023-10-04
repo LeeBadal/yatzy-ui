@@ -82,7 +82,7 @@
 import React, { useState, useEffect } from "react";
 import "./Scoreboard.css";
 
-const API_URL = "http://127.0.0.1:58958"
+const API_URL = "yatzy-api.badal.se"
 //const API_URL = "http://127.0.0.1:8080"
 const orderedKeys = [
   "Ones",
