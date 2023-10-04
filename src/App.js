@@ -7,7 +7,7 @@ import Scoreboard from './Scoreboard';
 import { sgameData } from "./const.js";
 
 
-const API_URL = "yatzy-api.badal.se"
+const API_URL = "http://yatzy-api.badal.se"
 //const API_URL = "http://127.0.0.1:58958"
 //const API_URL = "http://127.0.0.1:8080"
 
