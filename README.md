@@ -1,8 +1,13 @@
 # Yatzlee
 Spaghetti code frontend for a Yatzlee game.
 
+Live at: [https://yatzy.badal.se](https://yatzy.badal.se)
+
 ## Screenshot
 ![Screenshot](./static/yatzlee.PNG)
+
+## TODO
+- [] Mobile friendly
 
 ## Available Scripts
 
