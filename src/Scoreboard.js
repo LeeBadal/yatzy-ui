@@ -177,10 +177,6 @@ const Scoreboard = ({
 
   return (
     <>
-      <div>
-        <h1>Scoreboard</h1>
-
-        {/* Scoreboard*/}
         <table className="scoreboard-table">
           <thead>
             <tr>
@@ -234,7 +230,6 @@ const Scoreboard = ({
             ))}
           </tbody>
         </table>
-      </div>
     </>
   );
 };

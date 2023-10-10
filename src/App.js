@@ -153,17 +153,15 @@ const App = () => {
       {/* Pass game data state variable as a prop to Scoreboard component */}
       <Scoreboard gameData={gameData} setGameData={handleGameDataUpdate} setRandomSize={setRandomSize} setClicked={setClicked}/>
     </div>
-    
-    <div className="dice"> {/* add the dice class */}
       <div className="dice-container">
         <Die randomSize={randomSize[0]} setRandomSize={setRandomSize} index={0} clicked={clicked} setClicked={setClicked} />
-        <div className="margin"></div>
+       
         <Die randomSize={randomSize[1]} setRandomSize={setRandomSize} index={1} clicked={clicked} setClicked={setClicked} />
-        <div className="margin"></div>
+       
         <Die randomSize={randomSize[2]} setRandomSize={setRandomSize} index={2} clicked={clicked} setClicked={setClicked} />
-        <div className="margin"></div>
+        
         <Die randomSize={randomSize[3]} setRandomSize={setRandomSize} index={3} clicked={clicked} setClicked={setClicked} />
-        <div className="margin"></div>
+        
         <Die randomSize={randomSize[4]} setRandomSize={setRandomSize} index={4} clicked={clicked} setClicked={setClicked} />
         {gameStarted ? (
           gameData.game.RollsLeft === 0 ? (
@@ -176,7 +174,6 @@ const App = () => {
         )}
       </div>
     </div>
-  </div>
 );
 };
 
